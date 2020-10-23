@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - uri: https://httpbin.org/
+          predicates:
+            - Path=/httpbin/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/failure
+                statusCodes:
+                  - 500
+                  - "NOT_FOUND"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
